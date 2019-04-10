@@ -1,0 +1,44 @@
+{
+  "project_info": {
+    "project_number": "2658978677",
+    "firebase_url": "https://ecommerce-bc674.firebaseio.com",
+    "project_id": "ecommerce-bc674",
+    "storage_bucket": "ecommerce-bc674.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:2658978677:android:b1a7d8702bd19872",
+        "android_client_info": {
+          "package_name": "com.example.flutter_shopping"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "2658978677-tbrke7d6jl11ra3h04jvu0uq1erqmeda.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flutter_shopping",
+            "certificate_hash": "990d5abb9da7980cfc0b2d3cda827fa6a7fee5e7"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1tHfs4UBherR4kAYj4ctlFT36mgUjTxQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "2658978677-mrs05a6nre7kjofv2crvdhqr8n8oglnc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
