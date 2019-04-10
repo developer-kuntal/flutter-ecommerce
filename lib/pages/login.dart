@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shopping/pages/signup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,6 +19,7 @@ class _LoginState extends State<Login> {
   final GoogleSignIn googleSignIn = new GoogleSignIn();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
+
   TextEditingController _emailTextController = TextEditingController();
   TextEditingController _passwordTextController = TextEditingController();
   SharedPreferences preferences;
@@ -131,7 +133,7 @@ class _LoginState extends State<Login> {
                       child: ListView(
                         children: <Widget>[
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
                             child: Material(
                               borderRadius: BorderRadius.circular(10.0),
                               color: Colors.white.withOpacity(0.4),
@@ -143,6 +145,7 @@ class _LoginState extends State<Login> {
                                   decoration: InputDecoration(
                                     hintText: "Email",
                                     icon: Icon(Icons.alternate_email),
+                                    border: InputBorder.none,
                                   ),
                                   validator: (value) {
                                     if (value.isEmpty) {
@@ -161,7 +164,7 @@ class _LoginState extends State<Login> {
                           ),
 
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
                             child: Material(
                               borderRadius: BorderRadius.circular(10.0),
                               color: Colors.white.withOpacity(0.4),
@@ -173,6 +176,7 @@ class _LoginState extends State<Login> {
                                   decoration: InputDecoration(
                                     hintText: "Password",
                                     icon: Icon(Icons.lock_outline),
+                                    border: InputBorder.none,
                                   ),
                                   validator: (value){
                                     if(value.isEmpty){
@@ -182,13 +186,14 @@ class _LoginState extends State<Login> {
                                     }
                                     return null;
                                   },
+                                  obscureText: true,
                                 ),
                               ),
                             ),
                           ),
 
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
                             child: Material(
                               borderRadius: BorderRadius.circular(20.0),
                               color: Colors.blue.shade700,
@@ -204,27 +209,19 @@ class _LoginState extends State<Login> {
                             padding: const EdgeInsets.all(8.0),
                             child: Text("Forgot password", textAlign: TextAlign.center, style: TextStyle(color: Colors.white,  fontWeight: FontWeight.w400,),),
                           ),
-//                          Expanded(child: Container()),
-
+                          // Expanded(child: Container()),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: RichText(text: TextSpan(
-                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 16.0),
-                              children:[
-                                TextSpan(
-                                  text: "Don't have an accout? click here to"
-                                ),
-                                TextSpan(
-                                    text: " sign up!",
-                                  style: TextStyle(color: Colors.red)
-
-                                )
-                              ]
-                            ))
-//                            Text("Dont't have an accout? click here to sign up!",textAlign: TextAlign.end, style: TextStyle(color: Colors.white,  fontWeight: FontWeight.w400, fontSize: 16.0),),
+                            child: InkWell(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>SignUp()));
+                            },
+                            child: Text("Sign up!",textAlign: TextAlign.center, 
+                            style: TextStyle(color: Colors.red, fontWeight: FontWeight.w400, fontSize: 16.0),),),
                           ),
                           Divider(color: Colors.white,),
-                            Text("Other login in opntion",textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16.0),),
+                            Text("Other login in opntion",textAlign: TextAlign.center, 
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16.0),),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Padding(
