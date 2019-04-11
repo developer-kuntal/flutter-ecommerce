@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 
@@ -5,6 +6,8 @@ import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter_shopping/components/horizental_listview.dart';
 import 'package:flutter_shopping/components/products.dart';
 import 'package:flutter_shopping/pages/cart.dart';
+import 'package:flutter_shopping/pages/login.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 
 class MyHomePage extends StatefulWidget {
@@ -13,6 +16,23 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _gSignIn = new GoogleSignIn( );
+  bool isLoggedin = true;
+
+  void _logOut() async {
+    await _auth.signOut().then((response) {
+      isLoggedin = false;
+      setState(() { });
+    });
+    await _gSignIn.signOut();
+    if(!isLoggedin) {
+      Navigator.pushReplacement(context, 
+      MaterialPageRoute(builder: (context) => Login()));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -113,10 +133,10 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             InkWell(
-              onTap: (){},
+              onTap: _logOut,
               child: ListTile(
-                title: Text('About'),
-                leading: Icon(Icons.help,),
+                title: Text('Log out'),
+                leading: Icon(Icons.exit_to_app, ),
               ),
             ),
           ],

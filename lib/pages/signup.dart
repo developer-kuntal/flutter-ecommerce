@@ -13,6 +13,7 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
 
  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+
  final _formKey = GlobalKey<FormState>();
  UserServices _userServices = UserServices();
 
@@ -20,10 +21,12 @@ class _SignUpState extends State<SignUp> {
  TextEditingController _passwordTextController = TextEditingController();
  TextEditingController _nameTextController = TextEditingController();
  TextEditingController _confirmPasswordController = TextEditingController();
+
  String gender;
  String groupValue = "male";
  bool loading = false;
  bool hidePass = true;
+
  @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height / 3;
@@ -174,41 +177,41 @@ class _SignUpState extends State<SignUp> {
                             ),
                           ),
 
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-                            child: Material(
-                              borderRadius: BorderRadius.circular(10.0),
-                              color: Colors.white.withOpacity(0.4),
-                              elevation: 0.0,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left:12.0),
-                                child: ListTile(
-                                  title: TextFormField(
-                                    controller: _confirmPasswordController,
-                                    decoration: InputDecoration(
-                                      hintText: "Confirm password",
-                                      icon: Icon(Icons.lock_outline),
-                                      border: InputBorder.none,
-                                    ),
-                                    validator: (value){
-                                      if(value.isEmpty){
-                                        return "The password field cannot be empty";
-                                      }else if(value.length < 6){
-                                        return "the password has to be at least 6 characters long";
-                                      }
-                                      return null;
-                                    },
-                                    obscureText: hidePass,
-                                  ),
-                                  trailing: IconButton(icon: Icon(Icons.remove_red_eye,), onPressed: (){
-                                    setState(() {
-                                      hidePass = false; 
-                                    });
-                                  },),
-                                ),
-                              ),
-                            ),
-                          ),
+                          // Padding(
+                          //   padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+                          //   child: Material(
+                          //     borderRadius: BorderRadius.circular(10.0),
+                          //     color: Colors.white.withOpacity(0.4),
+                          //     elevation: 0.0,
+                          //     child: Padding(
+                          //       padding: const EdgeInsets.only(left:12.0),
+                          //       child: ListTile(
+                          //         title: TextFormField(
+                          //           controller: _confirmPasswordController,
+                          //           decoration: InputDecoration(
+                          //             hintText: "Confirm password",
+                          //             icon: Icon(Icons.lock_outline),
+                          //             border: InputBorder.none,
+                          //           ),
+                          //           validator: (value){
+                          //             if(value.isEmpty){
+                          //               return "The password field cannot be empty";
+                          //             }else if(value.length < 6){
+                          //               return "the password has to be at least 6 characters long";
+                          //             }
+                          //             return null;
+                          //           },
+                          //           obscureText: hidePass,
+                          //         ),
+                          //         trailing: IconButton(icon: Icon(Icons.remove_red_eye,), onPressed: (){
+                          //           setState(() {
+                          //             hidePass = false; 
+                          //           });
+                          //         },),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
 
                           Padding(
                             padding: const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
@@ -273,10 +276,10 @@ class _SignUpState extends State<SignUp> {
     FormState formState = _formKey.currentState;
     // Map value;
     if(formState.validate()) {
-      formState.reset();
+      // formState.reset();
       FirebaseUser user = await firebaseAuth.currentUser();
       if(user == null) {
-        await firebaseAuth.createUserWithEmailAndPassword(
+        firebaseAuth.createUserWithEmailAndPassword(
           email: _emailTextController.text, 
           password: _passwordTextController.text).then((user) => {
             _userServices.createUser({
