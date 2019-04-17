@@ -15,7 +15,11 @@ class Login extends StatefulWidget {
   _LoginState createState() => _LoginState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
+
+  Animation animation, delayedAnimation, muchDelayedAnimation;
+  AnimationController animationController;
+
   final GoogleSignIn googleSignIn = new GoogleSignIn();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
@@ -30,6 +34,20 @@ class _LoginState extends State<Login> {
   void initState() {
     super.initState();
     isSignedIn();
+
+    animationController = AnimationController(duration: Duration(seconds: 3), vsync: this);
+
+    animation = Tween(begin: -1.0, end: 0.0).animate(CurvedAnimation(
+      curve: Curves.fastOutSlowIn,
+      parent: animationController));
+
+    delayedAnimation = Tween(begin: -1.0, end: 0.0).animate(CurvedAnimation(
+      curve: Interval(0.5, 1.0, curve: Curves.fastOutSlowIn),
+      parent: animationController));
+
+    muchDelayedAnimation = Tween(begin: -1.0, end: 0.0).animate(CurvedAnimation(
+      curve: Interval(0.8, 1.0, curve: Curves.fastOutSlowIn),
+      parent: animationController));
   }
 
   void isSignedIn() async {
@@ -110,168 +128,190 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height / 3;
-    return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          Image.asset("images/bg.jpg", fit: BoxFit.fill, 
-            width: double.infinity,height: double.infinity,),
-          
-          Container(
-            color: Colors.black.withOpacity(0.8),
-            width: double.infinity,
-            height: double.infinity,
-          ),
-          
-          Container(
-            alignment: Alignment.topCenter,
-            child: Image.asset("images/lg.png"),
-            width: 280.0,
-            height: 240.0,
-          ),
 
-          Center(
-            child: Padding(
-               padding: const EdgeInsets.only(top: 200.0),
-               child: Center(
-                  child: Form(
-                      key: _formKey,
-                      child: ListView(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
-                            child: Material(
-                              borderRadius: BorderRadius.circular(10.0),
-                              color: Colors.white.withOpacity(0.4),
-                              elevation: 0.0,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left:12.0),
-                                child: TextFormField(
-                                  controller: _emailTextController,
-                                  decoration: InputDecoration(
-                                    hintText: "Email",
-                                    icon: Icon(Icons.alternate_email),
-                                    border: InputBorder.none,
-                                  ),
-                                  validator: (value) {
-                                    if (value.isEmpty) {
-                                      Pattern pattern =
-                                          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                                      RegExp regex = new RegExp(pattern);
-                                      if (!regex.hasMatch(value))
-                                        return 'Please make sure your email address is valid';
-                                      else
-                                        return null;
-                                    }
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
+    final double width = MediaQuery.of(context).size.width;
+    animationController.forward();
 
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-                            child: Material(
-                              borderRadius: BorderRadius.circular(10.0),
-                              color: Colors.white.withOpacity(0.4),
-                              elevation: 0.0,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left:12.0),
-                                child: TextFormField(
-                                  controller: _passwordTextController,
-                                  decoration: InputDecoration(
-                                    hintText: "Password",
-                                    icon: Icon(Icons.lock_outline),
-                                    border: InputBorder.none,
-                                  ),
-                                  validator: (value){
-                                    if(value.isEmpty){
-                                      return "The password field cannot be empty";
-                                    }else if(value.length < 6){
-                                      return "the password has to be at least 6 characters long";
-                                    }
-                                    return null;
-                                  },
-                                  obscureText: true,
-                                ),
-                              ),
-                            ),
-                          ),
+    return AnimatedBuilder(
+      animation: animationController,
+      builder: (BuildContext context, Widget child) {
+      return Scaffold(
+        body: Stack(
+          children: <Widget>[
 
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
-                            child: Material(
-                              borderRadius: BorderRadius.circular(20.0),
-                              color: Colors.blue.shade700,
-                              elevation: 0.0,
-                              child: MaterialButton(onPressed: (){},
-                              minWidth: MediaQuery.of(context).size.width,
-                                child: Text("Login", textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20.0),),
-                              )
-                            ),
-                          ),
-                           Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text("Forgot password", textAlign: TextAlign.center, style: TextStyle(color: Colors.white,  fontWeight: FontWeight.w400,),),
-                          ),
-                          // Expanded(child: Container()),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: InkWell(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>SignUp()));
-                            },
-                            child: Text("Sign up!",textAlign: TextAlign.center, 
-                            style: TextStyle(color: Colors.red, fontWeight: FontWeight.w400, fontSize: 16.0),),),
-                          ),
-                          Divider(color: Colors.white,),
-                            Text("Other login in opntion",textAlign: TextAlign.center, 
-                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16.0),),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: new Material(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  color: Colors.red,
-                                  elevation: 0.0,
-                                  child: MaterialButton(onPressed: (){
-                                    handleSignIn();
-                                  },
-                                    minWidth: MediaQuery.of(context).size.width,
-                                    child: Row(
-                                      children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.all(4.0),
-                                      child: Image.asset('images/google.png', width: 30.0, height: 30.0,),
-                                    ),
-                                        Text(" google", textAlign: TextAlign.center,
-                                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 22.0),),
-                                      ],
-                                    ),
-                                  )
-                              ),
-                            ),
-                          ),
-                        ],
-                      )),
-                ),
-             ),
-          ),
-          Visibility(
-            visible: loading ?? true,
-            child: Center(
+            Transform(
+              transform: Matrix4.translationValues(animation.value * width, 0.0, 0.0),
               child: Container(
-                alignment: Alignment.center,
-                color: Colors.white.withOpacity(0.9),
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                 child: Image.asset("images/bg.jpg", fit: BoxFit.fill, 
+                  width: double.infinity,height: double.infinity,),
+               ),
+            ),
+            
+            Container(
+                color: Colors.black.withOpacity(0.8),
+                width: double.infinity,
+                height: double.infinity,
+            ),
+
+            Transform(
+                transform: Matrix4.translationValues(delayedAnimation.value * width, 0.0, 0.0),
+                child: Container(
+                alignment: Alignment.topCenter,
+                child: Image.asset("images/lg.png"),
+                width: 280.0,
+                height: 240.0,
+              ),
+            ),
+
+            Transform(
+                transform: Matrix4.translationValues(muchDelayedAnimation.value * width, 0.0, 0.0),
+                child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 200.0),
+                  child: Center(
+                      child: Form(
+                          key: _formKey,
+                          child: ListView(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                                child: Material(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  color: Colors.white.withOpacity(0.4),
+                                  elevation: 0.0,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left:12.0),
+                                    child: TextFormField(
+                                      controller: _emailTextController,
+                                      decoration: InputDecoration(
+                                        hintText: "Email",
+                                        icon: Icon(Icons.alternate_email),
+                                        border: InputBorder.none,
+                                      ),
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          Pattern pattern =
+                                              r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                                          RegExp regex = new RegExp(pattern);
+                                          if (!regex.hasMatch(value))
+                                            return 'Please make sure your email address is valid';
+                                          else
+                                            return null;
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+                                child: Material(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  color: Colors.white.withOpacity(0.4),
+                                  elevation: 0.0,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left:12.0),
+                                    child: TextFormField(
+                                      controller: _passwordTextController,
+                                      decoration: InputDecoration(
+                                        hintText: "Password",
+                                        icon: Icon(Icons.lock_outline),
+                                        border: InputBorder.none,
+                                      ),
+                                      validator: (value){
+                                        if(value.isEmpty){
+                                          return "The password field cannot be empty";
+                                        }else if(value.length < 6){
+                                          return "the password has to be at least 6 characters long";
+                                        }
+                                        return null;
+                                      },
+                                      obscureText: true,
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                                child: Material(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                  color: Colors.blue.shade700,
+                                  elevation: 0.0,
+                                  child: MaterialButton(onPressed: (){},
+                                  minWidth: MediaQuery.of(context).size.width,
+                                    child: Text("Login", textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20.0),),
+                                  )
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Forgot password", textAlign: TextAlign.center, style: TextStyle(color: Colors.white,  fontWeight: FontWeight.w400,),),
+                              ),
+                              // Expanded(child: Container()),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: InkWell(
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>SignUp()));
+                                },
+                                child: Text("Sign up!",textAlign: TextAlign.center, 
+                                style: TextStyle(color: Colors.red, fontWeight: FontWeight.w400, fontSize: 16.0),),),
+                              ),
+                              Divider(color: Colors.white,),
+                                Text("Other login in opntion",textAlign: TextAlign.center, 
+                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16.0),),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: new Material(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      color: Colors.red,
+                                      elevation: 0.0,
+                                      child: MaterialButton(onPressed: (){
+                                        handleSignIn();
+                                      },
+                                        minWidth: MediaQuery.of(context).size.width,
+                                        child: Row(
+                                          children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: Image.asset('images/google.png', width: 30.0, height: 30.0,),
+                                        ),
+                                            Text(" google", textAlign: TextAlign.center,
+                                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 22.0),),
+                                          ],
+                                        ),
+                                      )
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )),
+                    ),
                 ),
               ),
-            ),)
-        ],
-      ),
-    );
+            ),
+
+            Visibility(
+              visible: loading ?? true,
+              child: Center(
+                child: Container(
+                  alignment: Alignment.center,
+                  color: Colors.white.withOpacity(0.9),
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                  ),
+                ),
+              ),)
+          ],
+
+        )
+      );
+    
+    });
   }
 }
