@@ -9,6 +9,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 // my own import
 // import 'package:flutter_shopping/pages/home.dart';
 import 'package:flutter_shopping/pages/home.dart';
+import 'package:flutter_shopping/functions/GlobalState.dart';
+
 
 class Login extends StatefulWidget {
   @override
@@ -16,6 +18,8 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
+
+  GlobalState _store = GlobalState.instance;
 
   Animation animation, delayedAnimation, muchDelayedAnimation;
   AnimationController animationController;
@@ -33,7 +37,16 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    
+    _store.set('id', '');
+    _store.set('username', '');
+    _store.set('profilePicture', '');
+    _store.set('email', '');
+    
     isSignedIn();
+
+    // _emailTextController = new TextEditingController();
+    // _emailTextController.text = _store.get('email');
 
     animationController = AnimationController(duration: Duration(seconds: 3), vsync: this);
 
@@ -77,7 +90,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
 
   Future handleSignIn() async {
     preferences = await SharedPreferences.getInstance();
-
+    
     setState(() {
      loading = true; 
     });
@@ -92,6 +105,12 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
 
     FirebaseUser firebaseUser = await firebaseAuth.signInWithCredential(credential);
     if(firebaseUser != null) {
+      // set current user details as a global state...
+      _store.set('id', firebaseUser.uid);
+      _store.set('username', firebaseUser.displayName);
+      _store.set('profilePicture', firebaseUser.photoUrl);
+      _store.set('email', firebaseUser.email);
+
       final QuerySnapshot result = await Firestore.instance.collection("users")
                 .where("id", isEqualTo: firebaseUser.uid).getDocuments();
       final List<DocumentSnapshot> documents = result.documents;
@@ -108,6 +127,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
         await preferences.setString("username", firebaseUser.displayName);
         await preferences.setString("profilePicture", firebaseUser.photoUrl);
         await preferences.setString("email", firebaseUser.email);
+
       } else {
         await preferences.setString("id", documents[0]['id']);
         await preferences.setString("username", documents[0]['username']);
@@ -135,14 +155,14 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
     return AnimatedBuilder(
       animation: animationController,
       builder: (BuildContext context, Widget child) {
+
       return Scaffold(
         body: Stack(
           children: <Widget>[
-
             Transform(
               transform: Matrix4.translationValues(animation.value * width, 0.0, 0.0),
               child: Container(
-                 child: Image.asset("images/bg.jpg", fit: BoxFit.fill, 
+                  child: Image.asset("images/bg.jpg", fit: BoxFit.fill, 
                   width: double.infinity,height: double.infinity,),
                ),
             ),
@@ -156,11 +176,11 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
             Transform(
                 transform: Matrix4.translationValues(delayedAnimation.value * width, 0.0, 0.0),
                 child: Container(
-                alignment: Alignment.topCenter,
-                child: Image.asset("images/lg.png"),
-                width: 280.0,
-                height: 240.0,
-              ),
+                  alignment: Alignment.topCenter,
+                  child: Image.asset("images/lg.png"),
+                  width: 280.0,
+                  height: 240.0,
+                ),
             ),
 
             Transform(
@@ -274,13 +294,13 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                                       child: MaterialButton(onPressed: (){
                                         handleSignIn();
                                       },
-                                        minWidth: MediaQuery.of(context).size.width,
+                                      minWidth: MediaQuery.of(context).size.width,
                                         child: Row(
                                           children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.all(4.0),
-                                          child: Image.asset('images/google.png', width: 30.0, height: 30.0,),
-                                        ),
+                                            Padding(
+                                              padding: const EdgeInsets.all(4.0),
+                                              child: Image.asset('images/google.png', width: 30.0, height: 30.0,),
+                                            ),
                                             Text(" google", textAlign: TextAlign.center,
                                               style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 22.0),),
                                           ],

@@ -8,7 +8,7 @@ import 'package:flutter_shopping/components/products.dart';
 import 'package:flutter_shopping/pages/cart.dart';
 import 'package:flutter_shopping/pages/login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
+import 'package:flutter_shopping/functions/GlobalState.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -16,7 +16,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  
+
+  GlobalState _store = GlobalState.instance;
+
   FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _gSignIn = new GoogleSignIn( );
   bool isLoggedin = true;
@@ -74,12 +76,13 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             // header
             new UserAccountsDrawerHeader(
-              accountName: Text("Kuntal Kanti Das"),
-              accountEmail: Text("kuntalkantidas.besu@gmail.com"),
+              accountName: Text("${_store.get('username')}"), // Kuntal Kanti Das
+              accountEmail: Text("${_store.get('email')}"), // kuntalkantidas.besu@gmail.com
               currentAccountPicture: GestureDetector(
                 child: new CircleAvatar(
                   backgroundColor: Colors.grey,
-                  child: Icon(Icons.person, color: Colors.white,),
+                  backgroundImage: NetworkImage("${_store.get('profilePicture')}") ??
+                        Icon(Icons.person, color: Colors.white,),
                 ),
               ),
               decoration: new BoxDecoration(
