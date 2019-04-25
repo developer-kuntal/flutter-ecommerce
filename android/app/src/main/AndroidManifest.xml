@@ -8,7 +8,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="flutter_shopping"
+        android:label="Fashion 1.0"
         android:icon="@mipmap/shop_icon">
         <activity
             android:name=".MainActivity"
