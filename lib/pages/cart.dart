@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_shopping/functions/Paytm.dart';
 // my own import
 import 'package:flutter_shopping/components/cart_products.dart';
 
@@ -33,7 +33,7 @@ class _CartState extends State<Cart> {
           Expanded(
             child: new MaterialButton(
               onPressed: () {
-                
+                PaytmPayment(5,2).payment();
               },
               child: new Text("Check out", style: TextStyle(color: Colors.white),),
               color: Colors.red,
